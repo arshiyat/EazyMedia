@@ -657,8 +657,11 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.viewport.WP"
   ],
   "eazyMedia.controller.Controller": [],
+  "eazyMedia.view.Filters": [],
   "eazyMedia.view.Main": [],
-  "eazyMedia.view.Toolbar": []
+  "eazyMedia.view.Settings": [],
+  "eazyMedia.view.Toolbar": [],
+  "eazyMedia.view.ViewMedia": []
 });
 
 Ext.ClassManager.addNameAliasMappings({
@@ -1380,11 +1383,20 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "eazyMedia.controller.Controller": [],
+  "eazyMedia.view.Filters": [
+    "widget.filterview"
+  ],
   "eazyMedia.view.Main": [
-    "widget.main"
+    "widget.mainview"
+  ],
+  "eazyMedia.view.Settings": [
+    "widget.setttingview"
   ],
   "eazyMedia.view.Toolbar": [
     "widget.toolbar"
+  ],
+  "eazyMedia.view.ViewMedia": [
+    "widget.view"
   ]
 });
 

@@ -3,9 +3,24 @@ Ext.define('eazyMedia.controller.Controller', {
 
     config: {
         refs: {
-            // main: 'mainview',
-
+            main: 'mainview',
+            view:'view',
+            settingsview:'setttingview',
+            filterview:'filterview',
             photoButton: '#photo',
+            videoButton:'#video',
+            audioButton:'#audio',
+            noteButton:'#note',
+            settingsButton:'#settings',
+            sortButton:'#sortButton',
+            deleteButton:'#deleteButton',
+            settingsList:'#settingslist',
+            SettingsBackbutton:'#SettingsBackbutton',
+            filterBackbutton:'#filterBackbutton',
+
+
+
+
             // contacts: 'contacts',
             // showContact: 'contact-show',
             // editContact: 'contact-edit',
@@ -13,16 +28,35 @@ Ext.define('eazyMedia.controller.Controller', {
         },
 
         control: {
-            // main: {
-            //     push: 'onMainPush',
-            //     pop: 'onMainPop'
-            // },
-            photoButton: {
-                tap: 'onContactEdit'
+            main: {
+                push:'onMainPush',
+                pop: 'onMainPop'
             },
-            // contacts: {
-            //     itemtap: 'onContactSelect'
-            // },
+            photoButton: {
+                tap: 'onPhoto'
+            },
+            videoButton: {
+                tap: 'onVideo'
+            },
+            audioButton: {
+                tap: 'onAudio'
+            },
+            noteButton: {
+                tap: 'onNote'
+            },
+            settingsButton: {
+                tap: 'onSettings'
+            },
+            settingsList: {
+                itemtap: 'onSettingsSelect'
+            },
+
+            SettingsBackbutton:{
+                tap:'onSettingBackButton'
+            },
+            filterBackbutton:{
+                tap:'onFilterBackButton'
+            },
             // saveButton: {
             //     tap: 'onContactSave'
             // },
@@ -32,54 +66,119 @@ Ext.define('eazyMedia.controller.Controller', {
         }
     },
 
+    SlideLeftTransition: {type:'slide',direction:'left'},
+    SlideRightTransition:{type:'slide',direction:'right'},
+
+    init:function()
+    {
+        //called when the app intializes, first called before launch
+        alert('init');
+    },
+
+    launch:function()
+    {
+        //called when the app launches after the init function
+        alert('launch');
+    },
+
     onMainPush: function(view, item) {
-        // var editButton = this.getEditButton();
+        var sortButton = this.getSortButton();
 
-        // if (item.xtype == "contact-show") {
-        //     this.getContacts().deselectAll();
+        if (item.xtype == "view") {
+            // this.getContacts().deselectAll();
+            this.hideSortButton();
+            this.showDeleteButton();
 
-        //     this.showEditButton();
-        // } else {
-        //     this.hideEditButton();
-        // }
+        } else {
+            this.showSortButton();
+            this.hideDeleteButton();
+
+        }
     },
 
     onMainPop: function(view, item) {
-        // if (item.xtype == "contact-edit") {
-        //     this.showEditButton();
-        // } else {
-        //     this.hideEditButton();
-        // }
+        if (item.xtype == "view") {
+            this.showSortButton();
+            this.hideDeleteButton();
+
+        } else {
+            this.hideEditButton();
+            this.showDeleteButton();
+
+        }
     },
 
-    onContactSelect: function(list, index, node, record) {
-        var editButton = this.getEditButton();
+    onSettingsSelect: function(list, index, node, record) {
+        // var editButton = this.getEditButton();
 
-        if (!this.showContact) {
-            this.showContact = Ext.create('AddressBook.view.contact.Show');
+        if (!this.filterview) {
+            this.filterview = Ext.create('eazyMedia.view.Filters');
         }
 
-        // Bind the record onto the show contact view
-        this.showContact.setRecord(record);
-
-        // Push the show contact view into the navigation view
-        this.getMain().push(this.showContact);
+        var filterview=this.getFilterview();
+        Ext.Viewport.animateActiveItem(filterview,this.SlideLeftTransition);
     },
 
-    onContactEdit: function() {
-        alert('gottcha');
-        // if (!this.editContact) {
-        //     this.editContact = Ext.create('AddressBook.view.contact.Edit');
-        // }
+    onFilterBackButton:function()
+    {
+        if (!this.settingsview) {
+                this.settingsview = Ext.create('eazyMedia.view.Settings');
+        }
 
-        // // Bind the record onto the edit contact view
-        // this.editContact.setRecord(this.getShowContact().getRecord());
+        var settingsView=this.getSettingsview();
+        Ext.Viewport.animateActiveItem(settingsView,this.SlideRightTransition);
+    },
 
-        // this.getMain().push(this.editContact);
+    onSettingBackButton:function()
+    {
+            if (!this.main) {
+                this.main = Ext.create('eazyMedia.view.Main');
+            }
 
-        // if (Ext.theme.name == "Blackberry") {
-        //     this.showSaveButton();
-        // }
+            var main=this.getMain();
+            Ext.Viewport.animateActiveItem(main,this.SlideRightTransition);
+    },
+
+
+    // Handler for the photo button tap event
+    onPhoto: function() {
+        try{
+            if (!this.view) {
+                this.view = Ext.create('eazyMedia.view.ViewMedia');
+            }
+            this.getMain().push(this.view);
+        }
+        catch(e)
+        {
+            alert('exception caught with '+e.message);
+        }
+
+    },
+
+    // Handler for the video button tap event
+    onVideo: function() {
+        alert('handler for the video');
+    },
+
+    // Handler for the audio button tap event
+    onAudio: function() {
+        alert('handler for the audio');
+    },
+    
+    // Handler for the note button tap event
+    onNote: function() {
+        alert('handler for the note');
+    },
+    
+    // Handler for the settings button tap event
+    onSettings: function() {
+        // alert('handler for the settings');
+         if (!this.settingsview) {
+            this.settingsview = Ext.create('eazyMedia.view.Settings');
+        }
+
+        var settingsview=this.getSettingsview();
+        Ext.Viewport.animateActiveItem(settingsview,this.SlideLeftTransition);
     },
 
     onContactChange: function() {
@@ -94,45 +193,61 @@ Ext.define('eazyMedia.controller.Controller', {
         this.getMain().pop();
     },
 
-    showEditButton: function() {
-        var editButton = this.getEditButton();
+    showSortButton: function() {
+        var sortButton = this.getSortButton();
 
-        if (!editButton.isHidden()) {
+        if (!sortButton.isHidden()) {
             return;
         }
 
-        this.hideSaveButton();
+        // this.hideSaveButton();
 
-        editButton.show();
+        sortButton.show();
     },
 
-    hideEditButton: function() {
-        var editButton = this.getEditButton();
+    hideSortButton: function() {
+        var sortButton = this.getSortButton();
 
-        if (editButton.isHidden()) {
+        if (sortButton.isHidden()) {
             return;
         }
 
-        editButton.hide();
+        sortButton.hide();
     },
 
-    showSaveButton: function() {
-        var saveButton = this.getSaveButton();
+    showDeleteButton: function() {
+        var deleteButton = this.getDeleteButton();
 
-        if (!saveButton.isHidden()) {
+        if (!deleteButton.isHidden()) {
             return;
         }
+        // alert(deleteButton.isHidden());
+        deleteButton.show();
+        // alert(deleteButton.isHidden());
 
-        saveButton.show();
     },
 
-    hideSaveButton: function() {
-        var saveButton = this.getSaveButton();
+    hideDeleteButton: function() {
+        var deleteButton = this.getDeleteButton();
 
-        if (saveButton.isHidden()) {
+        if (deleteButton.isHidden()) {
             return;
         }
 
-        saveButton.hide();
+        deleteButton.hide();
+    },
+
+    //helper functions....
+    generateId:function()
+    {
+        var now = new Date();
+
+        var noteId = (now.getTime()).toString() + (this.getRandomInt(0, 100)).toString();
+        return noteId;
+    },
+
+    getRandomInt:function(min,max)
+    {
+        return Math.floor(Math.random()*(max-min+1))+min;
     }
 });

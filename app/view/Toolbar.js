@@ -38,8 +38,9 @@ Ext.define('eazyMedia.view.Toolbar', {
     	},
     	{
     		xtype:'button',
-    		text:'Settings',
+    		// text:'Settings',
             flex:1,
+            iconCls:'settings',
             // style: 'background:green',
             id:'settings'
 

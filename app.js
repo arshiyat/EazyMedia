@@ -18,7 +18,7 @@ Ext.application({
     ],
 
     views: [
-        'Main','Toolbar'
+        'Main','Toolbar','ViewMedia','Settings','Filters'
     ],
     controllers:[
         'Controller'
