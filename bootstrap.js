@@ -657,6 +657,8 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.viewport.WP"
   ],
   "eazyMedia.controller.Controller": [],
+  "eazyMedia.model.Media": [],
+  "eazyMedia.store.MediaStore": [],
   "eazyMedia.view.Filters": [],
   "eazyMedia.view.Main": [],
   "eazyMedia.view.Settings": [],
@@ -1383,6 +1385,8 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "eazyMedia.controller.Controller": [],
+  "eazyMedia.model.Media": [],
+  "eazyMedia.store.MediaStore": [],
   "eazyMedia.view.Filters": [
     "widget.filterview"
   ],

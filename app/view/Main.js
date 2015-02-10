@@ -8,6 +8,8 @@ Ext.define('eazyMedia.view.Main', {
 
     config: {
         autoDestroy: false,
+        // layout:'card',
+        // cls:'ks-basic',
 
         navigationBar: {
             // splitNavigation: (Ext.theme.name == "Blackberry") ? {
@@ -66,9 +68,20 @@ Ext.define('eazyMedia.view.Main', {
 
         items: [
             { 
-                xtype: 'container',
-                id:'photo',
-            },
+                xtype:'dataview',
+                scrollable:'horizontal',
+                cls:'dataview-horizontal',
+                inline:{
+                    wrap:false
+                },
+
+                itemTpl: '<div class="myContent">'+ 
+                    '<div>Image Type: <b>{imageType}</b></div>' +
+                    '<div>Date created: <b>{dateCreated}</b></div>',
+                store:'MediaStore'
+                    
+            } ,
+              
             {
                 xtype:'toolbar'
             }

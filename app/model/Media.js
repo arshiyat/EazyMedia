@@ -8,6 +8,11 @@ Ext.define('eazyMedia.model.Media', {
             {name: 'srcUrl', type: 'string'},
             {name: 'imgUrl', type: 'string'},
             {name: 'dateCreated', type: 'date'}
-        ]
+        ],
+
+        proxy: {
+          type: 'localstorage',
+          id  : 'Media'
+        }
     }
 });

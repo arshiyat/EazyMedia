@@ -72,13 +72,13 @@ Ext.define('eazyMedia.controller.Controller', {
     init:function()
     {
         //called when the app intializes, first called before launch
-        alert('init');
+        // alert('init');
     },
 
     launch:function()
     {
         //called when the app launches after the init function
-        alert('launch');
+        // alert('launch');
     },
 
     onMainPush: function(view, item) {
@@ -142,6 +142,27 @@ Ext.define('eazyMedia.controller.Controller', {
 
     // Handler for the photo button tap event
     onPhoto: function() {
+
+        var captureSuccess = function(mediaFiles) {
+            var i, path, len;
+            for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+                path = mediaFiles[i].fullPath;
+
+                alert('captured path is '+path);
+                // do something interesting with the file
+            }
+        }
+
+        // capture error callback
+        var captureError = function(error) {
+            navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+        };
+
+        // start image capture
+        navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
+
+        
+
         try{
             if (!this.view) {
                 this.view = Ext.create('eazyMedia.view.ViewMedia');
@@ -157,12 +178,46 @@ Ext.define('eazyMedia.controller.Controller', {
 
     // Handler for the video button tap event
     onVideo: function() {
-        alert('handler for the video');
+        // capture callback
+        var captureSuccess = function(mediaFiles) {
+            var i, path, len;
+            for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+                path = mediaFiles[i].fullPath;
+                // do something interesting with the file
+            }
+        };
+
+        // capture error callback
+        var captureError = function(error) {
+            navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+        };
+
+        // start video capture
+        navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
+
+        // alert('handler for the video');
     },
 
     // Handler for the audio button tap event
     onAudio: function() {
-        alert('handler for the audio');
+
+        // capture callback
+        var captureSuccess = function(mediaFiles) {
+            var i, path, len;
+            for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+                path = mediaFiles[i].fullPath;
+                // do something interesting with the file
+            }
+        };
+
+        // capture error callback
+        var captureError = function(error) {
+            navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+        };
+
+        // start audio capture
+        navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
+            // alert('handler for the audio');
     },
     
     // Handler for the note button tap event
