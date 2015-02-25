@@ -22,6 +22,7 @@ Ext.define('eazyMedia.store.MediaStore', {
     ],
 
     config: {
+    	autoLoad: true,
         model: 'eazyMedia.model.Media',
         storeId: 'userstore',
         proxy: {

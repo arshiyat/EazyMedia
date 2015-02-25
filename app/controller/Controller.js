@@ -5,7 +5,7 @@ Ext.define('eazyMedia.controller.Controller', {
 
     config: {
 
-        eazyMediaStore:  null,
+        store:  null,
 
         refs: {
             main: 'mainview',
@@ -23,6 +23,7 @@ Ext.define('eazyMedia.controller.Controller', {
             SettingsBackbutton:'#SettingsBackbutton',
             filterBackbutton:'#filterBackbutton',
             img:'#img',
+
 
 
 
@@ -63,6 +64,9 @@ Ext.define('eazyMedia.controller.Controller', {
             filterBackbutton:{
                 tap:'onFilterBackButton'
             },
+            sortButton:{
+                tap:'onSortButton'
+            },
             // saveButton: {
             //     tap: 'onContactSave'
             // },
@@ -74,32 +78,24 @@ Ext.define('eazyMedia.controller.Controller', {
 
     SlideLeftTransition: {type:'slide',direction:'left'},
     SlideRightTransition:{type:'slide',direction:'right'},
-    fileSystem:'ppp',
+    fileSystem:null,
     mediaDirectoryEntry:null,
 
 
     init:function()
     {
         //called when the app intializes, first called before launch
-
-        //create the directories to store the media data
-
-        // this.getMainDirectoryCreated();
-
-
     },
 
     launch:function()
     {
-        //called when the app launches after the init function
-        // alert('launch');
-
         //setting the store
-        this.setEazyMediaStore(Ext.getStore('mediaStore')); 
+        this.setStore(Ext.getStore('mediaStore'));
 
-        this.storeMedia('uuuhppps');
+        //create the current date directory if it does not exists. 
+        this.getMainDirectoryCreated();
 
-
+        // this.storeMedia('ppp');
     },
 
     onMainPush: function(view, item) {
@@ -161,12 +157,27 @@ Ext.define('eazyMedia.controller.Controller', {
     },
 
 
+    onSortButton:function()
+    {
+        //on click of the data view item
+        try{
+            if (!this.view) {
+                this.view = Ext.create('eazyMedia.view.ViewMedia');
+            }
+            this.getMain().push(this.view);
+        }
+        catch(e)
+        {
+            alert('exception caught with '+e.message);
+        }
+    },
+
     // Handler for the photo button tap event
     onPhoto: function() {
 
         var me=this;
 
-        alert('dir entry'+this.mediaDirectoryEntry.fullPath);
+        alert('dir entry created'+this.mediaDirectoryEntry.fullPath);
 
         try{
             navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
@@ -177,7 +188,7 @@ Ext.define('eazyMedia.controller.Controller', {
              
             // Called when a photo is successfully retrieved
             function onPhotoURISuccess(imageURI) {
-                // me.updateCameraImages(imageURI);
+                me.moveAndRenameMedia(imageURI,'i');
             };
              
             // Called if something bad happens.
@@ -190,17 +201,7 @@ Ext.define('eazyMedia.controller.Controller', {
             alert('exception'+e.toString());
         }
 
-        //on click of the data view item
-        // try{
-        //     if (!this.view) {
-        //         this.view = Ext.create('eazyMedia.view.ViewMedia');
-        //     }
-        //     this.getMain().push(this.view);
-        // }
-        // catch(e)
-        // {
-        //     alert('exception caught with '+e.message);
-        // }
+        
 
     },
 
@@ -213,6 +214,8 @@ Ext.define('eazyMedia.controller.Controller', {
             var i, path, len;
             for (i = 0, len = mediaFiles.length; i < len; i += 1) {
                 path = mediaFiles[i].fullPath;
+                alert('path is '+ path);
+                me.moveAndRenameMedia('file:///'+path,'v');
                 // do something interesting with the file
             }
         };
@@ -223,9 +226,8 @@ Ext.define('eazyMedia.controller.Controller', {
         };
 
         // start video capture
-        navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
+        navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:1});
 
-        // alert('handler for the video');
     },
 
     // Handler for the audio button tap event
@@ -237,6 +239,8 @@ Ext.define('eazyMedia.controller.Controller', {
             var i, path, len;
             for (i = 0, len = mediaFiles.length; i < len; i += 1) {
                 path = mediaFiles[i].fullPath;
+                alert(path);
+                me.moveAndRenameMedia('file:///'+path,'a');
                 // do something interesting with the file
             }
         };
@@ -328,8 +332,8 @@ Ext.define('eazyMedia.controller.Controller', {
     {
         var now = new Date();
 
-        var noteId = (now.getTime()).toString() + (this.getRandomInt(0, 100)).toString();
-        return noteId;
+        var id = (now.getTime()).toString() + (this.getRandomInt(0, 100)).toString();
+        return id;
     },
 
     getRandomInt:function(min,max)
@@ -337,90 +341,44 @@ Ext.define('eazyMedia.controller.Controller', {
         return Math.floor(Math.random()*(max-min+1))+min;
     },
 
-
-    readFilePath:function(url)
+    moveAndRenameMedia:function(URI,captureType)
     {
-        // url='file://'+url;
-        alert('reading the file');
-        try{
-                    window.requestFileSystem(window.TEMPORARY, 1024*1024, function(fs) {
-                        alert('file system'+url);
-              fs.root.getFile(url, {create: false,exclusive:false}, function(fileEntry) {
-                alert('got the file');
-                // fileEntry.remove(function() {
-                //   console.log('File removed.');
-                // }, errorHandler);
-
-              }, errorHandler);
-            }, errorHandler);
-
-                    var errorHandler=function errorHandler(e) {
-                  var msg = '';
-
-                  switch (e.code) {
-                    case FileError.QUOTA_EXCEEDED_ERR:
-                      msg = 'QUOTA_EXCEEDED_ERR';
-                      break;
-                    case FileError.NOT_FOUND_ERR:
-                      msg = 'NOT_FOUND_ERR';
-                      break;
-                    case FileError.SECURITY_ERR:
-                      msg = 'SECURITY_ERR';
-                      break;
-                    case FileError.INVALID_MODIFICATION_ERR:
-                      msg = 'INVALID_MODIFICATION_ERR';
-                      break;
-                    case FileError.INVALID_STATE_ERR:
-                      msg = 'INVALID_STATE_ERR';
-                      break;
-                    default:
-                      msg = 'Unknown Error';
-                      break;
-                  };
-
-                  alert('Error: ' + msg);}
-
-
-
-        }
-        catch(e)
-        {
-            alert('exception caught'+e.toString);
-        }
-    },
-
-    updateCameraImages:function(imageURI)
-    {
-        alert('in updateCameraImages'+imageURI);
-        alert(''+this.mediaDirectoryEntry.fullPath);
+        alert('in moveAndRenameMedia'+this.mediaDirectoryEntry.fullPath);
         try{
         var url;
         me=this;
         
         var mediaName=this.getGeneratedId();
-        mediaName=mediaName+'.jpg';
+        var type;
+
+        switch(captureType)
+        {
+            case 'i': type='.jpg';
+                    break;
+
+            case 'v': type='.mov';
+                    break;
+
+            case 'a': type='.wav';
+                    break;
+
+        }
 
 
-         window.resolveLocalFileSystemURI(imageURI, function(fileEntry){
+        mediaName=mediaName+type;
+
+
+         window.resolveLocalFileSystemURI(URI, function(fileEntry){
             alert('finally'+fileEntry.toURL());
-            me.getImg().setSrc(url); 
+            // me.getImg().setSrc(url); 
              fileEntry.moveTo(me.mediaDirectoryEntry, mediaName,function(entry){
 
                     alert('moved image url'+entry.toURL());
+                    me.storeMedia(entry.toURL(),captureType);
+                    me.onSortButton();
                     me.getImg().setSrc(entry.toURL());
-                }, function(e1){alert('erere');});
-              }, function(e1){alert('erere');});
-
-
-         // var gotImageURI=function(fileEntry)
-         // {
-         //    alert('got the fle finally...with path '+fileEntry.toURL());
-         // };
-
-         // var errorHandler=function(e)
-         // {
-         //    alert('caught the error');
-         // };
+                }, function(e1){me.errorHandler(e);});
+              }, function(e){me.errorHandler(e);});
      }
      catch(e)
      {
@@ -456,20 +414,14 @@ Ext.define('eazyMedia.controller.Controller', {
         alert('Error: ' + msg);
     },
 
-    errorOnDirectory:function(e)
-    {
-        //Create the main directory EazyMedia
-        alert('Directory not found ...create the directory');
-    },
-
     createDirectory:function(root)
     {
         var me=this;
         try{
-            alert('creting directot with root'+root.fullPath);
+            // alert('creting directot with root'+root.fullPath);
             root.getDirectory('EazyMedia', {create: true},function(dirEntry)
             {
-                alert('creating eazyMedia directory with url '+dirEntry.fullPath);
+                // alert('creating eazyMedia directory with url '+dirEntry.fullPath);
                 me.createSubDirectory(dirEntry);
             },function(e)
                 {
@@ -489,18 +441,18 @@ Ext.define('eazyMedia.controller.Controller', {
         var today=new Date();
 
         var todayString=''+today.getDate()+today.getMonth()+today.getFullYear();
-        alert('in creating sub directories'+todayString);
+        // alert('in creating sub directories'+todayString);
 
         dirEntry.getDirectory(todayString, {},function(dirEntry)
         {
-            alert('dir exists now start'+dirEntry.fullPath);
+            // alert('dir exists now start'+dirEntry.fullPath);
             me.mediaDirectoryEntry=dirEntry;
         },function(e){
             if(e.code==FileError.NOT_FOUND_ERR)
             {
                 dirEntry.getDirectory(todayString, {create: true},function(dirEntry)
                 {
-                    alert('sub directory created now we are ready to start ');
+                    // alert('sub directory created now we are ready to start ');
                     me.mediaDirectoryEntry=dirEntry;
                 },function(e){me.errorHandler(e);});
             }
@@ -510,18 +462,19 @@ Ext.define('eazyMedia.controller.Controller', {
     getMainDirectoryCreated:function()
     {
         var me=this;
-        alert('file sss'+this.fileSystem);
-        var fsystem=this.fileSystem;
+        // alert('file sss'+this.fileSystem);
+        // var fsystem=this.fileSystem;
+        var fsystem;
 
         try{
             alert('finding the directory');
             window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs)
             {
                 fsystem=fs.root;
-                alert('found fs'+fsystem.fullPath);
+                // alert('found fs'+fsystem.fullPath);
 
                 fs.root.getDirectory('EazyMedia', {}, function(dirEntry) {
-                    alert('Directory found  of eazyMedia is found then call the method to create the new sub directory');
+                    // alert('Directory found  of eazyMedia is found then call the method to create the new sub directory');
                         me.createSubDirectory(dirEntry);
 
                     },function(e)
@@ -541,55 +494,41 @@ Ext.define('eazyMedia.controller.Controller', {
     },
 
 
-    storeMedia:function(url)
+    storeMedia:function(url,mediaType)
     {
         //url is the media source url
         var now=new Date();
 
-          // this.getStore().load();
-            // this.getStore().removeAll();
+        var userStore = Ext.getStore('userstore');
+        userStore.setAutoLoad(true);
+        userStore.setAutoSync(true);
 
-            // this.getStore().sync();
-
-            // this.getStore().load();
-
+        //In case the cache is to be emptied along with the store
+         // userStore.removeAll();
 
         try{
-            //get the store
-            var store = this.getEazyMediaStore();
+            
+           var counter=0,temp=0;
+            if(userStore.getCount()==0)
+            {
+               counter=1;
+            }
+            else
+            {
+                temp=userStore.getCount()+1;
+                counter=temp;
+            }
+        
+            alert('counter is '+counter);
 
-            alert('found store '+store);
+            userStore.add({mediaId:counter,imageType:mediaType,srcUrl:url,imgUrl:url,dateStamp:now});
 
-           // store.add({ id:'1', title: 'Audio'});//, srcUrl: 'resources/icons/audio.jpeg', mediaUrl: 'path', dateStamp: now });
-
-
-            //load the localStorage store
-            store.load();
-
-
-            // if ((store.getCount()) == 0) {
-            //     alert('store is empty');
-            // }
-
-           // store.add({ id:1, mediaType: 'Audio'});//, srcUrl: 'resources/icons/audio.jpeg', mediaUrl: 'path', dateStamp: now });
-           // store.add({ id:2, mediaType: 'Audio', srcUrl: 'resources/icons/audio.jpeg', mediaUrl: 'path', dateStamp: now });
-
-            // store.sync();
-
-
-            alert('after added the count is '+store.getCount());
-           
-
-
+            alert('store count is '+userStore.getCount());
+              
         }
         catch(e)
         {
             alert('Exception caught'+e.toString());
         }
-
-
-
-
-
     }
 });

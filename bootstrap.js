@@ -1385,8 +1385,12 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "eazyMedia.controller.Controller": [],
-  "eazyMedia.model.Media": [],
-  "eazyMedia.store.MediaStore": [],
+  "eazyMedia.model.Media": [
+    "model.User"
+  ],
+  "eazyMedia.store.MediaStore": [
+    "store.UserStore"
+  ],
   "eazyMedia.view.Filters": [
     "widget.filterview"
   ],

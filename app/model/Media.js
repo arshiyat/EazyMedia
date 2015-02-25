@@ -23,15 +23,11 @@ Ext.define('eazyMedia.model.Media',{
  
        config: {
            fields: [
-           {
-              name: 'username'
-           },
-           {
-              name: 'password'
-           },
-            {
-              name: 'email'
-           }
+            {name: 'mediaId', type: 'int'},
+            {name: 'imageType', type: 'string'},
+            {name: 'srcUrl', type: 'string'},
+            {name: 'imgUrl', type: 'string'},
+            {name: 'dateStamp', type: 'date'}
            ]
      }
 });
