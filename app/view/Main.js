@@ -67,20 +67,29 @@ Ext.define('eazyMedia.view.Main', {
         },
 
         items: [
-            { 
-                xtype:'dataview',
-                scrollable:'horizontal',
-                cls:'dataview-horizontal',
-                inline:{
-                    wrap:false
-                },
+            // { 
+            //     xtype:'dataview',
+            //     scrollable:'horizontal',
+            //     cls:'dataview-horizontal',
+            //     inline:{
+            //         wrap:false
+            //     },
 
-                itemTpl: '<div class="myContent">'+ 
-                    '<div>Image Type: <b>{imageType}</b></div>' +
-                    '<div>Date created: <b>{dateCreated}</b></div>',
-                store:'MediaStore'
+            //     itemTpl: '<div class="myContent">'+ 
+            //         '<div>Image Type: <b>{imageType}</b></div>' +
+            //         '<div>Date created: <b>{dateCreated}</b></div>',
+            //     store:'MediaStore'
                     
-            } ,
+            // } ,
+            // {
+            //     xtype:'image',
+            //     id:'img'
+            // },
+            {
+                xtype:'panel',
+                html:null,
+                id:'showPanel'
+            },
               
             {
                 xtype:'toolbar'

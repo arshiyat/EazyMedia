@@ -23,9 +23,7 @@ Ext.define('eazyMedia.controller.Controller', {
             SettingsBackbutton:'#SettingsBackbutton',
             filterBackbutton:'#filterBackbutton',
             img:'#img',
-
-
-
+            showPanel:'#showPanel',
 
 
             // contacts: 'contacts',
@@ -81,21 +79,25 @@ Ext.define('eazyMedia.controller.Controller', {
     fileSystem:null,
     mediaDirectoryEntry:null,
 
-
     init:function()
     {
         //called when the app intializes, first called before launch
+
     },
 
     launch:function()
     {
         //setting the store
-        this.setStore(Ext.getStore('mediaStore'));
+        this.setStore(Ext.getStore('userstore'));
+
+        this.getStore().setAutoLoad(true);
+        this.getStore().setAutoSync(true);
+
+        // this.clearStore();
 
         //create the current date directory if it does not exists. 
         this.getMainDirectoryCreated();
 
-        // this.storeMedia('ppp');
     },
 
     onMainPush: function(view, item) {
@@ -159,8 +161,34 @@ Ext.define('eazyMedia.controller.Controller', {
 
     onSortButton:function()
     {
-        //on click of the data view item
-        try{
+
+    alert('in sort');
+    try{
+          var userStore = Ext.getStore('userstore');
+        userStore.setAutoLoad(true);
+        userStore.setAutoSync(true);
+
+
+        alert(userStore.getAt(0).get('imageType')+'fdfsd'+userStore.getAt(0).get('srcUrl'));//.get('srcUrl'));
+        
+        var htmlStr="";
+        // alert('src is ' +this.getImg().getSrc());
+    
+        if(userStore.getAt(0).get('imageType')==='i')
+        {
+            // this.getImg().setSrc(null);
+            // this.getImg().setSrc(userStore.getAt(0).get('srcUrl'));
+            htmlStr="<img src='"+userStore.getAt(0).get('srcUrl')+"' width='200' height='200'>";
+            this.getShowPanel().setHtml(htmlStr);
+        }
+        else if(userStore.getAt(0).get('imageType')==='v')
+        {
+
+        }
+
+
+        // on click of the data view item
+        
             if (!this.view) {
                 this.view = Ext.create('eazyMedia.view.ViewMedia');
             }
@@ -374,9 +402,9 @@ Ext.define('eazyMedia.controller.Controller', {
              fileEntry.moveTo(me.mediaDirectoryEntry, mediaName,function(entry){
 
                     alert('moved image url'+entry.toURL());
-                    me.storeMedia(entry.toURL(),captureType);
-                    me.onSortButton();
-                    me.getImg().setSrc(entry.toURL());
+                    me.storeMedia(entry.toInternalURL(),captureType);
+                     // me.getImg().setSrc(entry.toInternalURL());
+                   
                 }, function(e1){me.errorHandler(e);});
               }, function(e){me.errorHandler(e);});
      }
@@ -462,7 +490,6 @@ Ext.define('eazyMedia.controller.Controller', {
     getMainDirectoryCreated:function()
     {
         var me=this;
-        // alert('file sss'+this.fileSystem);
         // var fsystem=this.fileSystem;
         var fsystem;
 
@@ -503,24 +530,18 @@ Ext.define('eazyMedia.controller.Controller', {
         userStore.setAutoLoad(true);
         userStore.setAutoSync(true);
 
-        //In case the cache is to be emptied along with the store
-         // userStore.removeAll();
-
         try{
             
-           var counter=0,temp=0;
+           var counter=0;
             if(userStore.getCount()==0)
             {
                counter=1;
             }
             else
             {
-                temp=userStore.getCount()+1;
-                counter=temp;
+                counter=userStore.getCount()+1;
             }
         
-            alert('counter is '+counter);
-
             userStore.add({mediaId:counter,imageType:mediaType,srcUrl:url,imgUrl:url,dateStamp:now});
 
             alert('store count is '+userStore.getCount());
@@ -530,5 +551,14 @@ Ext.define('eazyMedia.controller.Controller', {
         {
             alert('Exception caught'+e.toString());
         }
+    },
+
+    clearStore:function()
+    {
+        var store=this.getStore();
+
+        store.removeAll();
+
+        alert('Store is cleared'+store.getCount());
     }
 });
