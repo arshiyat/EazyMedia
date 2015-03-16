@@ -28,6 +28,13 @@ Ext.define('eazyMedia.store.MediaStore', {
         proxy: {
             type: 'localstorage',
             id: 'userstoreproxy'
-        }
+        },
+        grouper: {            
+             groupFn: function(record) {               
+                   // Send back a formatted string date                
+                   return Ext.Date.format(record.get('dateStamp'), 'Y-m-d T');            
+             },
+            sortProperty:'dateStamp'
+         }
     }
 });

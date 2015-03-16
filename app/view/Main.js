@@ -8,88 +8,65 @@ Ext.define('eazyMedia.view.Main', {
 
     config: {
         autoDestroy: false,
-        // layout:'card',
-        // cls:'ks-basic',
 
         navigationBar: {
-            // splitNavigation: (Ext.theme.name == "Blackberry") ? {
-            //     xtype: 'toolbar',
-            //     items: [{
-            //         docked: 'right',
-            //         xtype: 'button',
-            //         iconCls: 'pencil',
-            //         id: 'editButton',
-            //         hidden: true
-            //     },{
-            //         docked: 'right',
-            //         xtype: 'button',
-            //         iconCls: 'check',
-            //         id: 'saveButton',
-            //         hidden: true
-            //     }]
-            // } : false,
             ui: (Ext.theme.name == "Blackberry") ? 'light' : 'sencha',
+            style: 'background:#1C1C1C',
+
             items: [
                 {
                     xtype: 'button',
                     id: 'sortButton',
                     text: 'Sort',
                     align: 'right',
-                    // hidden: false,
-                    // hideAnimation: Ext.os.is.Android ? false : {
-                    //     type: 'fadeOut',
-                    //     duration: 200
-                    // },
-                    // showAnimation: Ext.os.is.Android ? false : {
-                    //     type: 'fadeIn',
-                    //     duration: 200
-                    // }
                 },
                 {
                     xtype: 'button',
                     id: 'deleteButton',
-                    // text: 'Delete',
                     iconCls:'trash',
                     iconMask:true,
                     align: 'right',
                     hidden: true,
-                    // hideAnimation: Ext.os.is.Android ? false : {
-                    //     type: 'fadeOut',
-                    //     duration: 200
-                    // },
-                    // showAnimation: Ext.os.is.Android ? false : {
-                    //     type: 'fadeIn',
-                    //     duration: 200
-                    // }
                 }
-               
             ]
         },
 
         items: [
-            // { 
-            //     xtype:'dataview',
-            //     scrollable:'horizontal',
-            //     cls:'dataview-horizontal',
-            //     inline:{
-            //         wrap:false
-            //     },
+        
+            { 
+                xtype:'dataview',
+                scrollable:'horizontal',
+                cls:'dataview-horizontal',
+                style: 'background:#D8D8D8',
+                inline:{
+                    wrap:true
+                },
 
-            //     itemTpl: '<div class="myContent">'+ 
-            //         '<div>Image Type: <b>{imageType}</b></div>' +
-            //         '<div>Date created: <b>{dateCreated}</b></div>',
-            //     store:'MediaStore'
+                itemTpl: 
+                '<div class="tableThumbnail">'
+                    +'<tpl if="imageType==\'i\'">'
+                        +'<div class="img"><img src="{imgUrl}" height="75" width="75"/> </div>'
+                    +'</tpl>'
+                    +'<tpl if="imageType==\'v\'">'
+                    +'<div class="img"><video src="{currentUrl}" controls="controls" webkit-playsinline preload="metadata" height="75" width="150"></video></div>'
+                    +'</tpl>'
+                +'</div>',
+                store: 'userstore',
+                scrollable: {
+                        direction: 'vertical',
+                        directionLock: true
+                }
                     
-            // } ,
+            } ,
             // {
             //     xtype:'image',
             //     id:'img'
             // },
-            {
-                xtype:'panel',
-                html:null,
-                id:'showPanel'
-            },
+            // {
+            //     xtype:'panel',
+            //     html:'null',
+            //     id:'showPanel'
+            // },
               
             {
                 xtype:'toolbar'

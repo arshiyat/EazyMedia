@@ -5,7 +5,7 @@ Ext.define('eazyMedia.view.Toolbar', {
     
     config: {
         docked:'bottom',
-        style: 'background:black',
+        style: 'background:#1C1C1C',
         
     	items:[
     	{

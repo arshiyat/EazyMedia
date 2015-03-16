@@ -87,16 +87,61 @@ Ext.define('eazyMedia.controller.Controller', {
 
     launch:function()
     {
-        //setting the store
-        this.setStore(Ext.getStore('userstore'));
+        try{
+            //setting the store
+            this.setStore(Ext.getStore('userstore'));
 
-        this.getStore().setAutoLoad(true);
-        this.getStore().setAutoSync(true);
+            this.getStore().setAutoLoad(true);
+            this.getStore().setAutoSync(true);
 
-        // this.clearStore();
+            // this.clearStore();
 
-        //create the current date directory if it does not exists. 
-        this.getMainDirectoryCreated();
+            // alert('in launch with store count'+this.getStore().getCount());
+
+            //create the current date directory if it does not exists. 
+            this.getMainDirectoryCreated();
+
+            //video/audio path modifications for video tag to work
+
+            this.getVideoAudioPath();
+
+        }
+        catch(e)
+        {
+            alert('Exception caught'+e.toString());
+        }
+
+
+    },
+
+    getVideoAudioPath:function()
+    {
+        try{
+            var store=this.getStore();
+            var url;
+
+            store.each(function(record,id){
+                if(record.get('imageType')==='v' || record.get('imageType')==='a')
+                {
+                      url=record.get('srcUrl');  
+                      window.resolveLocalFileSystemURI(url, function(fileEntry){
+                          // alert('finally'+fileEntry.toURL());
+                          record.set('currentUrl',fileEntry.toURL());
+                        }, function(e){alert('exception in resolve');});
+                }
+            });
+
+            // store.sync();
+             // store.each(function(record,id){
+             //    alert(record.get('currentUrl'));
+             // });
+
+
+        }
+        catch(e)
+        {
+            alert('exception caught'+e.toString);
+        }
 
     },
 
@@ -125,6 +170,7 @@ Ext.define('eazyMedia.controller.Controller', {
             this.showDeleteButton();
 
         }
+
     },
 
     onSettingsSelect: function(list, index, node, record) {
@@ -164,28 +210,62 @@ Ext.define('eazyMedia.controller.Controller', {
 
     alert('in sort');
     try{
-          var userStore = Ext.getStore('userstore');
-        userStore.setAutoLoad(true);
-        userStore.setAutoSync(true);
-
-
-        alert(userStore.getAt(0).get('imageType')+'fdfsd'+userStore.getAt(0).get('srcUrl'));//.get('srcUrl'));
         
-        var htmlStr="";
-        // alert('src is ' +this.getImg().getSrc());
+        var userStore = this.getStore();
+        alert(userStore);
+
+        // alert(userStore.getAt(0).get('imageType')+'fdfsd'+userStore.getAt(userStore.getCount()).get('srcUrl'));//.get('srcUrl'));
+        
+        // var htmlStr="";
+        // // alert('src is ' +this.getImg().getSrc());
     
-        if(userStore.getAt(0).get('imageType')==='i')
-        {
-            // this.getImg().setSrc(null);
-            // this.getImg().setSrc(userStore.getAt(0).get('srcUrl'));
-            htmlStr="<img src='"+userStore.getAt(0).get('srcUrl')+"' width='200' height='200'>";
-            this.getShowPanel().setHtml(htmlStr);
-        }
-        else if(userStore.getAt(0).get('imageType')==='v')
-        {
+        // if(userStore.getAt(0).get('imageType')==='i')
+        // {
+        //     // this.getImg().setSrc(null);
+        //     // this.getImg().setSrc(userStore.getAt(0).get('srcUrl'));
+        //     htmlStr="<img src='"+userStore.getAt(0).get('srcUrl')+"' width='200' height='200'>";
+        //     // this.getShowPanel().setHtml(htmlStr);
+        // }
+        // else if(userStore.getAt(0).get('imageType')==='v')
+        // {
 
-        }
+        // }
+        var count=userStore.getCount();
+        // alert(count);
 
+        var url=userStore.getAt(6).get('srcUrl');
+
+        // alert(url);
+        var me=this;
+
+
+
+         window.resolveLocalFileSystemURI(url, function(fileEntry){
+            alert('finally'+fileEntry.toURL());
+            var html='<video width="320" height="240" controls src="'+fileEntry.toURL()+'"/>';
+            alert(html);
+
+            me.getShowPanel().setHtml(html);
+
+            // me.getImg().setSrc(url); 
+             // fileEntry.moveTo(me.mediaDirectoryEntry, mediaName,function(entry){
+
+             //        alert('moved image url'+entry.toURL());
+             //        if(captureType=='v')
+             //        {
+             //            alert(entry.toInternalURL());
+             //            me.storeMedia1(entry.toInternalURL(),entry.toURL(),captureType);
+
+             //        }
+             //        else
+             //        {
+             //            me.storeMedia(entry.toInternalURL(),captureType);
+             //        }
+
+             //         // me.getImg().setSrc(entry.toInternalURL());
+                   
+             //    }, function(e1){me.errorHandler(e);});
+              }, function(e){alert('exception in resolve');});
 
         // on click of the data view item
         
@@ -400,9 +480,8 @@ Ext.define('eazyMedia.controller.Controller', {
             alert('finally'+fileEntry.toURL());
             // me.getImg().setSrc(url); 
              fileEntry.moveTo(me.mediaDirectoryEntry, mediaName,function(entry){
-
                     alert('moved image url'+entry.toURL());
-                    me.storeMedia(entry.toInternalURL(),captureType);
+                    me.storeMedia(entry.toInternalURL(),entry.toURL(),captureType);
                      // me.getImg().setSrc(entry.toInternalURL());
                    
                 }, function(e1){me.errorHandler(e);});
@@ -521,7 +600,7 @@ Ext.define('eazyMedia.controller.Controller', {
     },
 
 
-    storeMedia:function(url,mediaType)
+    storeMedia:function(url,currentUrl,mediaType)
     {
         //url is the media source url
         var now=new Date();
@@ -542,7 +621,7 @@ Ext.define('eazyMedia.controller.Controller', {
                 counter=userStore.getCount()+1;
             }
         
-            userStore.add({mediaId:counter,imageType:mediaType,srcUrl:url,imgUrl:url,dateStamp:now});
+            userStore.add({mediaId:counter,imageType:mediaType,srcUrl:url,imgUrl:url,currentUrl:currentUrl,dateStamp:now});
 
             alert('store count is '+userStore.getCount());
               
@@ -552,6 +631,8 @@ Ext.define('eazyMedia.controller.Controller', {
             alert('Exception caught'+e.toString());
         }
     },
+
+    
 
     clearStore:function()
     {

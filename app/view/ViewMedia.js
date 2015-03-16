@@ -12,10 +12,11 @@ Ext.define('eazyMedia.view.ViewMedia', {
         //     xtype:'titlebar',
         //     text:'View Media'
         // },
-        //     {
-        //         xtype:'image',
-        //         id:'img'    
-        //     }
+            // {
+            //     xtype:'panel',
+            //     id:'img',
+            //     html    
+            // }
 
         ]
         

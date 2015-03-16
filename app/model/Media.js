@@ -27,6 +27,7 @@ Ext.define('eazyMedia.model.Media',{
             {name: 'imageType', type: 'string'},
             {name: 'srcUrl', type: 'string'},
             {name: 'imgUrl', type: 'string'},
+            {name: 'currentUrl', type: 'string'},
             {name: 'dateStamp', type: 'date'}
            ]
      }
