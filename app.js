@@ -18,17 +18,17 @@ Ext.application({
     ],
 
     views: [
-        'Main','Toolbar','ViewMedia','Settings','Filters'
+        'Main','Toolbar','ViewMedia','Settings','Filters','CaptureDataView'
     ],
     controllers:[
         'Controller'
     ],
 
     models:[
-        'Media'
+        'Media','Capture'
     ],
     stores:[
-        'MediaStore'
+        'Medias','Captures'
     ],
 
     icon: {
@@ -57,9 +57,9 @@ Ext.application({
         Ext.Viewport.add(Ext.create('eazyMedia.view.Main'));
 
          // Adjust toolbar height when running in iOS to fit with new iOS 7 style
-        // if (Ext.os.is.iOS && Ext.os.version.major >= 7) {
-        //     Ext.select(".x-toolbar").applyStyles("height: 62px; padding-top: 7px;");
-    // }
+        if (Ext.os.is.iOS && Ext.os.version.major >= 7) {
+            Ext.select(".x-toolbar").applyStyles("height: 62px; padding-top: 7px;");
+        }
     },
 
     onUpdated: function() {

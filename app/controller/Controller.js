@@ -5,7 +5,8 @@ Ext.define('eazyMedia.controller.Controller', {
 
     config: {
 
-        store:  null,
+        captureStore:  null,
+        mediaStore:null,
 
         refs: {
             main: 'mainview',
@@ -78,6 +79,8 @@ Ext.define('eazyMedia.controller.Controller', {
     SlideRightTransition:{type:'slide',direction:'right'},
     fileSystem:null,
     mediaDirectoryEntry:null,
+    eazyDirectoryEntry:null,
+    currentCapturedId:-1,
 
     init:function()
     {
@@ -88,17 +91,26 @@ Ext.define('eazyMedia.controller.Controller', {
     launch:function()
     {
         try{
-            //setting the store
-            this.setStore(Ext.getStore('userstore'));
+            //setting the stores
+            this.setCaptureStore(Ext.getStore('Captures'));
+            this.setMediaStore(Ext.getStore('Medias'));
 
-            this.getStore().setAutoLoad(true);
-            this.getStore().setAutoSync(true);
+            this.getCaptureStore().setAutoLoad(true);
+            this.getCaptureStore().setAutoSync(true);
+
+            this.getMediaStore().setAutoLoad(true);
+            this.getMediaStore().setAutoSync(true);
 
             // this.clearStore();
 
-            // alert('in launch with store count'+this.getStore().getCount());
+        //     alert(this.getCaptureStore().getCount());
+
+        // alert(this.getCaptureStore().getAt(0).get('dateStamp')+'--and--'+this.getMediaStore().getAt(0).get('url'));//.get('srcUrl'));
+
+
 
             //create the current date directory if it does not exists. 
+
             this.getMainDirectoryCreated();
 
             //video/audio path modifications for video tag to work
@@ -117,16 +129,16 @@ Ext.define('eazyMedia.controller.Controller', {
     getVideoAudioPath:function()
     {
         try{
-            var store=this.getStore();
+            var store=this.getMediaStore();
             var url;
 
             store.each(function(record,id){
-                if(record.get('imageType')==='v' || record.get('imageType')==='a')
+                if(record.get('type')==='v' || record.get('type')==='a')
                 {
-                      url=record.get('srcUrl');  
+                      url=record.get('url');  
                       window.resolveLocalFileSystemURI(url, function(fileEntry){
                           // alert('finally'+fileEntry.toURL());
-                          record.set('currentUrl',fileEntry.toURL());
+                          record.set('appUrl',fileEntry.toURL());
                         }, function(e){alert('exception in resolve');});
                 }
             });
@@ -451,6 +463,9 @@ Ext.define('eazyMedia.controller.Controller', {
 
     moveAndRenameMedia:function(URI,captureType)
     {
+        //In case the directory for current date is not created then this creats sub directory matching current date
+        this.createSubDirectory(this.eazyDirectoryEntry);
+
         alert('in moveAndRenameMedia'+this.mediaDirectoryEntry.fullPath);
         try{
         var url;
@@ -472,11 +487,9 @@ Ext.define('eazyMedia.controller.Controller', {
 
         }
 
-
         mediaName=mediaName+type;
 
-
-         window.resolveLocalFileSystemURI(URI, function(fileEntry){
+        window.resolveLocalFileSystemURI(URI, function(fileEntry){
             alert('finally'+fileEntry.toURL());
             // me.getImg().setSrc(url); 
              fileEntry.moveTo(me.mediaDirectoryEntry, mediaName,function(entry){
@@ -529,6 +542,7 @@ Ext.define('eazyMedia.controller.Controller', {
             root.getDirectory('EazyMedia', {create: true},function(dirEntry)
             {
                 // alert('creating eazyMedia directory with url '+dirEntry.fullPath);
+                me.eazyDirectoryEntry=dirEntry;
                 me.createSubDirectory(dirEntry);
             },function(e)
                 {
@@ -561,6 +575,7 @@ Ext.define('eazyMedia.controller.Controller', {
                 {
                     // alert('sub directory created now we are ready to start ');
                     me.mediaDirectoryEntry=dirEntry;
+                    me.generateCaptureId();
                 },function(e){me.errorHandler(e);});
             }
         });
@@ -581,6 +596,7 @@ Ext.define('eazyMedia.controller.Controller', {
 
                 fs.root.getDirectory('EazyMedia', {}, function(dirEntry) {
                     // alert('Directory found  of eazyMedia is found then call the method to create the new sub directory');
+                        me.eazyDirectoryEntry=dirEntry;
                         me.createSubDirectory(dirEntry);
 
                     },function(e)
@@ -605,25 +621,35 @@ Ext.define('eazyMedia.controller.Controller', {
         //url is the media source url
         var now=new Date();
 
-        var userStore = Ext.getStore('userstore');
-        userStore.setAutoLoad(true);
-        userStore.setAutoSync(true);
+        var mediaStore = this.getMediaStore();
+        // mediaStore.setAutoLoad(true);
+        // mediaStore.setAutoSync(true);
 
         try{
             
            var counter=0;
-            if(userStore.getCount()==0)
+           var captureCounter=0;
+            if(mediaStore.getCount()==0)
             {
                counter=1;
             }
             else
             {
-                counter=userStore.getCount()+1;
+                counter=mediaStore.getCount()+1;
             }
-        
-            userStore.add({mediaId:counter,imageType:mediaType,srcUrl:url,imgUrl:url,currentUrl:currentUrl,dateStamp:now});
 
-            alert('store count is '+userStore.getCount());
+            if(this.getCaptureStore().getCount==0)
+            {
+                throw(new Exception('Capture model missing'));
+            }
+            
+            captureCounter=this.getCaptureStore().getCount();
+            alert('mediaId'+counter);
+            alert('captureId'+captureCounter+'type'+mediaType);
+        
+            mediaStore.add({mediaId:counter,captureId:captureCounter,type:mediaType,url:url,appUrl:currentUrl,dateStamp:now});
+
+            alert('store count is '+mediaStore.getCount());
               
         }
         catch(e)
@@ -632,13 +658,34 @@ Ext.define('eazyMedia.controller.Controller', {
         }
     },
 
+    //called when the sub directory for that date is created. We make an entry to captures store as and when that is done.
+    generateCaptureId:function()
+    {
+        var store=this.getCaptureStore();
+        var count=store.getCount();
+        var today=new Date();
+
+        this.currentCapturedId=count;
+
+        if(count==0)//no records yet then 
+        {
+            this.currentCapturedId=1;
+        }
+
+        store.add({primaryId:this.currentCapturedId,captureName:'blah blah',dateStamp:today});
+
+        alert('capture store count is after generation '+store.getCount());
+    },
+
     
 
     clearStore:function()
     {
-        var store=this.getStore();
+        var store=this.getMediaStore();
 
-        store.removeAll();
+        this.getMediaStore().removeAll();
+        this.getCaptureStore().removeAll();
+
 
         alert('Store is cleared'+store.getCount());
     }

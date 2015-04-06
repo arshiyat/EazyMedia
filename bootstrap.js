@@ -657,8 +657,14 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.viewport.WP"
   ],
   "eazyMedia.controller.Controller": [],
+  "eazyMedia.model.BaseModel": [],
+  "eazyMedia.model.Capture": [],
   "eazyMedia.model.Media": [],
+  "eazyMedia.store.BaseStore": [],
+  "eazyMedia.store.Captures": [],
   "eazyMedia.store.MediaStore": [],
+  "eazyMedia.store.Medias": [],
+  "eazyMedia.view.CaptureDataView": [],
   "eazyMedia.view.Filters": [],
   "eazyMedia.view.Main": [],
   "eazyMedia.view.Settings": [],
@@ -1385,11 +1391,17 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "eazyMedia.controller.Controller": [],
-  "eazyMedia.model.Media": [
-    "model.User"
-  ],
+  "eazyMedia.model.BaseModel": [],
+  "eazyMedia.model.Capture": [],
+  "eazyMedia.model.Media": [],
+  "eazyMedia.store.BaseStore": [],
+  "eazyMedia.store.Captures": [],
   "eazyMedia.store.MediaStore": [
     "store.UserStore"
+  ],
+  "eazyMedia.store.Medias": [],
+  "eazyMedia.view.CaptureDataView": [
+    "widget.captureDataView"
   ],
   "eazyMedia.view.Filters": [
     "widget.filterview"

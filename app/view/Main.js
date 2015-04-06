@@ -34,28 +34,31 @@ Ext.define('eazyMedia.view.Main', {
         items: [
         
             { 
-                xtype:'dataview',
-                scrollable:'horizontal',
-                cls:'dataview-horizontal',
-                style: 'background:#D8D8D8',
-                inline:{
-                    wrap:true
-                },
+                xtype:'captureDataView',
+                // xtype:'panel',
+                // html:'fcuk'
 
-                itemTpl: 
-                '<div class="tableThumbnail">'
-                    +'<tpl if="imageType==\'i\'">'
-                        +'<div class="img"><img src="{imgUrl}" height="75" width="75"/> </div>'
-                    +'</tpl>'
-                    +'<tpl if="imageType==\'v\'">'
-                    +'<div class="img"><video src="{currentUrl}" controls="controls" webkit-playsinline preload="metadata" height="75" width="150"></video></div>'
-                    +'</tpl>'
-                +'</div>',
-                store: 'userstore',
-                scrollable: {
-                        direction: 'vertical',
-                        directionLock: true
-                }
+                // scrollable:'horizontal',
+                // cls:'dataview-horizontal',
+                // style: 'background:#D8D8D8',
+                // inline:{
+                //     wrap:true
+                // },
+
+                // itemTpl: 
+                // '<div class="tableThumbnail">'
+                //     +'<tpl if="imageType==\'i\'">'
+                //         +'<div class="img"><img src="{imgUrl}" height="75" width="75"/> </div>'
+                //     +'</tpl>'
+                //     +'<tpl if="imageType==\'v\'">'
+                //     +'<div class="img"><video src="{currentUrl}" controls="controls" webkit-playsinline preload="metadata" height="75" width="150"></video></div>'
+                //     +'</tpl>'
+                // +'</div>',
+                // store: 'userstore',
+                // scrollable: {
+                //         direction: 'vertical',
+                //         directionLock: true
+                // }
                     
             } ,
             // {
