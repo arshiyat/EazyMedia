@@ -4,16 +4,19 @@ Ext.define('eazyMedia.store.Captures', {
     config: {
         // autoLoad: true,
         model: 'eazyMedia.model.Capture',
+        autoLoad:true,
 
         storeId: 'Captures',
        
-        // grouper: {            
-        //      groupFn: function(record) {               
-        //            // Send back a formatted string date                
-        //            return Ext.Date.format(record.get('dateStamp'), 'Y-m-d T');            
-        //      },
-        //     sortProperty:'dateStamp'
-        //  }
+        grouper: {            
+             groupFn: function(record) {               
+                   // Send back a formatted string date                
+                   return Ext.Date.format(record.get('dateStamp'), 'Y-m-d T');            
+             },
+            sortProperty:'dateStamp',
+            direction: 'DESC',
+
+         }
 
 
         // data: [{
@@ -41,35 +44,5 @@ Ext.define('eazyMedia.store.Captures', {
         // },
        
         // ]
-
     }
-    // config: {
-    //     model: 'eazyMedia.model.Capture',
-
-    //     data: [{
-    //         id: 1,
-    //         CaptureName:'first ',
-    //         date:'20'
-    //     },
-    //     {
-    //         id: 2,
-    //         CaptureName:'second ',
-    //         date:'false'
-
-    //     },
-    //     {
-    //         id: 3,
-    //         CaptureName:'third',
-    //         date:'truethat'
-
-    //     },
-    //     {
-    //         id: 4,
-    //         CaptureName:'fourth',
-    //         date:'falsethat'
-
-    //     },
-       
-    //     ]
-    // }
 });

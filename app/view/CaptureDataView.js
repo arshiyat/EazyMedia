@@ -18,51 +18,100 @@ Ext.define('eazyMedia.view.CaptureDataView', {
         inline:{
             wrap:true
         },
+        itemId:'grid',
 
-        // itemTpl: '<div>{url} is years old</div>',
-        // '<div class="tableThumbnail">image...{url}'
-            // +'<table style="width: 100%">'
-            // +'<tr><tpl if="medias.length == 0">No Media Captured</tpl>{dateStamp}</tr>'
-            // +'<tr>'
-            // +'<tpl for="medias">'
-            // +'<td>'
-            //     +'<tpl if="type==\'i\'">'
-            //         +'<div class="img"><img src="{url}" height="75" width="75"/> </div>'
-            //     +'</tpl>'
-            //     +'<tpl if="imageType==\'v\'">'
+        //  plugins: [
+        // {
+        //     xclass: "Ext.plugin.ListPaging",
+        //     autoPaging: true
+        // }
+        // ],
+
+        
             //         +'<div class="img"><video src="{appUrl}" controls="controls" webkit-playsinline preload="metadata" height="75" width="150"></video></div>'
-            //     +'</tpl>'
-            // +'</td>'
-            // +'</tpl></tr>'
-        // +'</div>',
-        itemTpl: [
+        emptyText: 'No Moments Captured yet!',
+        itemTpl: Ext.create('Ext.XTemplate',
             '<div class="Capture">',
-                '<table style="width: 100%">',
-                '<tr>',
-                    '<td style="width: 35%"><b>{dateStamp}</b><br></td>',
+                '{dateStamp:date("F j, Y")}<p></p>',
+                // '<tpl if="medias.length == 0">No Moments Captured</tpl>',
+                '<tpl for="medias">',
+                    // '<p>{#}: </p>', 
+                    '<tpl if="type == \'i\'"><img src="{url}" width="100" height="100"/></tpl>',
+                    '<tpl if="type == \'v\'"><video src="{appUrl}"  height="100" width="100">cannot play</video></tpl>',
 
-                    '<td ><tpl if="medias.length == 0">No time logged</tpl><br><tpl for="medias"><div> {url}</div></tpl><br></td>',
-                '</tr>',
+                    // '<tpl if="type == \'v\'">-<video src="{appUrl}"  height="100" width="100"/></tpl>',
+                    
+                   '<tpl if="type == \'a\'">',
+                   '<div class="audio">',
+                   '<a id="{appUrl}" type="audio">Visit</a>',
+                        // '<tpl if="this.shorten(appUrl)">',
+                        //     '<p>{appUrl} is a baby!</p>',
+                        // '</tpl>',
+
+                    '</div>',
+                   
+                    '</tpl>',
+
+                '</tpl>',
                 
-                '</table>',
-            '</div>'
-        ],
+            '</div>',
+            {
+                shorten:function()
+                {
+                    console.log('appUrl'+this);
+                    return true;
+                     // this.fireEvent('fireFormEvent',this,formValues);
+                     // var media=new Media(appUrl, function(){console.log('success');}, function(e){console.log('Cannot play the audio '+e.message)});
+                }
+            }
+        ),
         store: 'Captures',
 
         scrollable: {
                 direction: 'vertical',
                 directionLock: true
-        }
+        },
+         listeners: {
+           // itemtap: function(dataview, index, target, record, e, eOpts) {
+           //      var vals = [];
+           //      alert('item tap');
+           //      console.log(e.target);
+           //      console.log(e.target.id);//give the url to the audio file
+           //      console.log(e.target.type);//give "audio" as the type
+           //      // console.log(record);
+           //      // console.log(index);
+           //      // console.log(target);
+           //      // var strTarget=e.target;
+           //      // console.log(strTarget.length);
+           //      if(e.target.type=="audio")
+           //      {
+           //          vals[0]="a";
+           //          vals[1]=e.target.id;
+           //      }
+           //     // console.log(eOpts);
+               
+           //     this.fireEvent('tapped',this,vals);
+           // },
+           select:function( dataview, record, eOpts)
+           {
+                console.log('selected');
+           },
+           itemtaphold: function(dataview, index, target, record, e, eOpts )
+           {
+            console.log('item tap hold');
+           }
+    }
     },
 
    prepareData: function(data, index, record) {
         var i;
 
-        console.log(record.get('id'));
+        // console.log(record.get('id'));
 
         // var mediaStore = Ext.getStore('Media');
         // mediaStore.clearFilter();
         // mediaStore.filter('captureId',record.get('id'));
+        // console.log('preparing the data');
 
         var activities = record.getAssociatedRecords('Media');
 
@@ -74,7 +123,7 @@ Ext.define('eazyMedia.view.CaptureDataView', {
         }
         data.medias = activityArr;
 
-        console.log(data);
+        // console.log(data);
 
         return data;
     }

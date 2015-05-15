@@ -10,19 +10,8 @@ Ext.define("eazyMedia.model.Capture", {
             {
                 name: 'captureName'
             },
-            {
-                name:'dateStamp',
-                // type:'date'
-            },
-            // {
-            //     name: 'captureDate',
-            //     type: 'date',
-            //     // dateFormat: 'Y-m-d',
-
-            //     // convert: function(val) {
-            //     //  return Ext.Date.format(new Date(parseInt(val,10)), 'Y-n-j')
-            //     // }
-            // }
+            { name: 'dateStamp', type: 'date', 
+        },
         ],
 
         // data: [{

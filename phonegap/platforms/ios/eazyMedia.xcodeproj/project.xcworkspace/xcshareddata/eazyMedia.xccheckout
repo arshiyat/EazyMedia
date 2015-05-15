@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>AD08B978-F182-4D08-B740-32C844921384</string>
 	<key>IDESourceControlProjectName</key>
-	<string>eazyMedia</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>277E8E63727A7AB6ADEF94B797ADF828BD6B540D</key>
 		<string>https://github.com/arshiyat/eazyMedia.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>phonegap/platforms/ios/eazyMedia.xcodeproj</string>
+	<string>phonegap/platforms/ios/eazyMedia.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>277E8E63727A7AB6ADEF94B797ADF828BD6B540D</key>
